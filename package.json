@@ -1,0 +1,22 @@
+{
+  "name": "supernavigate",
+  "version": "0.0.1",
+  "description": "",
+  "main": "supernavigate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ericvicenti/supernavigate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ericvicenti/spernavigate/issues"
+  },
+  "homepage": "https://github.com/ericvicenti/spernavigate",
+  "dependencies": {
+    "browser-router": "^0.1.2"
+  }
+}
