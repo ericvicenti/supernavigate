@@ -1,6 +1,6 @@
 {
   "name": "supernavigate",
-  "version": "0.0.1-browser-and-urls.0",
+  "version": "0.0.1-browser-and-urls.1",
   "description": "",
   "main": "supernavigate.js",
   "scripts": {
@@ -19,7 +19,8 @@
   "dependencies": {
     "browser-router": "^0.1.2",
     "query-string": "^0.3.0",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "html5-history": "^0.1.5"
   },
   "private": false
 }
