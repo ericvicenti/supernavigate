@@ -155,7 +155,7 @@ exports.browser = function browserNavigator(window) {
   });
 
   router.onRoute = function(handler) {
-    currentHandlers = _.union(currentHandlers, handler);
+    currentHandlers = _.union(currentHandlers, [ handler ]);
   }
 
   router.offRoute = function(handler) {
