@@ -1,6 +1,6 @@
 {
   "name": "supernavigate",
-  "version": "0.0.1",
+  "version": "0.0.1-browser-and-urls.0",
   "description": "",
   "main": "supernavigate.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git@github.com:ericvicenti/supernavigate.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/ericvicenti/spernavigate/issues"
   },
