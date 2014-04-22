@@ -1,6 +1,6 @@
 {
   "name": "supernavigate",
-  "version": "0.1.0-handler-fix.0",
+  "version": "0.1.1",
   "description": "",
   "main": "supernavigate.js",
   "scripts": {
