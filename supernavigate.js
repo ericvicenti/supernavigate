@@ -5,7 +5,24 @@ var queryString = require('query-string');
 function _calculateUrl(path, params) {
   var search = '';
   if (!_.isEmpty(params)) {
-    search = '?' + queryString.stringify(params);
+    var simpleParams = [];
+    _.each(params, function(paramVal, paramName) {
+      if (paramVal === null) {
+        simpleParams.push(paramName);
+        delete params[paramName];
+      }
+    });
+
+    if (_.isEmpty(params) && simpleParams.length) {
+      search = '?' + simpleParams.join('&');
+    } else if (!_.isEmpty(params) && !simpleParams.length) {
+      search = '?' + queryString.stringify(params);
+    } else if (!_.isEmpty(params) && simpleParams.length) {
+      search = '?' + queryString.stringify(params);
+      _.each(simpleParams, function(paramName) {
+        search += '&' + paramName;
+      }); 
+    }
   }
   var target = path+search;
   return target;
@@ -90,6 +107,9 @@ exports.server = function serverNavigator(req, res) {
 
   router.getParam = function getParam(paramName) {
     var params = router.getParams();
+    if (!_.contains(_.keys(params), paramName)) {
+      return;
+    }
     var param = params[paramName];
     return param;
   }
@@ -187,6 +207,9 @@ exports.browser = function browserNavigator(window) {
 
   router.getParam = function getParam(paramName) {
     var params = router.getParams();
+    if (!_.contains(_.keys(params), paramName)) {
+      return;
+    }
     var param = params[paramName];
     return param;
   }
