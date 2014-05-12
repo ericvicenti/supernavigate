@@ -5,24 +5,7 @@ var queryString = require('query-string');
 function _calculateUrl(path, params) {
   var search = '';
   if (!_.isEmpty(params)) {
-    var simpleParams = [];
-    _.each(params, function(paramVal, paramName) {
-      if (paramVal === null) {
-        simpleParams.push(paramName);
-        delete params[paramName];
-      }
-    });
-
-    if (_.isEmpty(params) && simpleParams.length) {
-      search = '?' + simpleParams.join('&');
-    } else if (!_.isEmpty(params) && !simpleParams.length) {
-      search = '?' + queryString.stringify(params);
-    } else if (!_.isEmpty(params) && simpleParams.length) {
-      search = '?' + queryString.stringify(params);
-      _.each(simpleParams, function(paramName) {
-        search += '&' + paramName;
-      }); 
-    }
+    search = '?' + queryString.stringify(params);
   }
   var target = path+search;
   return target;
@@ -44,7 +27,7 @@ function _getUrlUtils(router) {
     removeParam: function(param) {
       var params = router.getParams();
       delete params[param];
-      return _calculateUrl(state.path, params);
+      return _calculateUrl(router._path, params);
     },
     toggleParam: function(param) {
       var params = router.getParams();
@@ -53,7 +36,7 @@ function _getUrlUtils(router) {
       } else {
         params = null;
       }
-      return _calculateUrl(state.path, params);
+      return _calculateUrl(router._path, params);
     },
     route: function(path, params, title) {
       return _calculateUrl(path, params);
@@ -63,53 +46,48 @@ function _getUrlUtils(router) {
 exports.server = function serverNavigator(req, res) {
   var router = {};
   
-  var state = {
-    path: req.path,
-    params: req.query,
-    title: ''
-  };
+  router._path = req.path;
+  router._params = req.query;
+  router._title = '';
 
   router.url = _getUrlUtils(router);
 
   router.route = function route(path, params, title) {
     // no title mgmt on server.. just raw redirect
-    state.path = path || state.path || router.getPath();
-    state.params = params || state.params || {};
+    router._path = path || router._path || router.getPath();
+    router._params = params || router._params || {};
 
-    var target = _calculateUrl(state.path, state.params);
+    var target = _calculateUrl(router._path, router._params);
 
     res.redirect(target);
   }
 
   router.setPath = function setPath(path) {
-    router.route(path, state.params, state.title);
+    router.route(path, router._params, router._title);
   }
 
   router.setTitle = function setTitle(title) {
-    state.title = title;
+    router._title = title;
   }
 
   router.setParams = function setParams(params) {
-    router.route(state.path, params, state.title);
+    router.route(router._path, params, router._title);
   }
 
   router.getPath = function getPath() {
-    return state.path;
+    return router._path;
   }
 
   router.getTitle = function getTitle() {
-    return state.title;
+    return router._title;
   }
 
   router.getParams = function getParams() {
-    return state.params;
+    return router._params;
   }
 
   router.getParam = function getParam(paramName) {
     var params = router.getParams();
-    if (!_.contains(_.keys(params), paramName)) {
-      return;
-    }
     var param = params[paramName];
     return param;
   }
@@ -150,15 +128,13 @@ exports.browser = function browserNavigator(window) {
 
   var router = {};
 
-  var state = {};
-
   router.route = function route(path, params, title) {
-    state.path = path || state.path || router.getPath();
-    state.params = params || state.params || {};
-    state.title = title || state.title || '';
+    router._path = path || router._path || router.getPath();
+    router._params = params || router._params || {};
+    router._title = title || router._title || '';
 
-    var target = _calculateUrl(state.path, state.params);
-    History.pushState(state.params, state.title, target);
+    var target = _calculateUrl(router._path, router._params);
+    History.pushState(router._params, router._title, target);
   }
 
   router.url = _getUrlUtils(router);
@@ -166,11 +142,11 @@ exports.browser = function browserNavigator(window) {
   var currentHandlers = [];
 
   History.Adapter.bind(window, 'statechange', function() {
-    state.path = router.getPath();
-    state.params = router.getParams();
-    state.title = router.getTitle();
+    router._path = router.getPath();
+    router._params = router.getParams();
+    router._title = router.getTitle();
     _.each(currentHandlers, function(handler) {
-      handler(state.path, state.params, state.title);
+      handler(router._path, router._params, router._title);
     });
   });
 
@@ -188,7 +164,7 @@ exports.browser = function browserNavigator(window) {
   }
 
   router.setPath = function setPath(path) {
-    router.route(path, state.params, state.title);
+    router.route(path, router._params, router._title);
   }
 
   router.getTitle = function getTitle() {
@@ -197,7 +173,7 @@ exports.browser = function browserNavigator(window) {
   }
 
   router.setTitle = function setTitle(title) {
-    window.document.title = state.title = title;
+    window.document.title = router._title = title;
   }
 
   router.getParams = function getParams() {
@@ -207,15 +183,12 @@ exports.browser = function browserNavigator(window) {
 
   router.getParam = function getParam(paramName) {
     var params = router.getParams();
-    if (!_.contains(_.keys(params), paramName)) {
-      return;
-    }
     var param = params[paramName];
     return param;
   }
 
   router.setParams = function setParams(params) {
-    router.route(state.path, params, state.title);
+    router.route(router._path, params, router._title);
   }
 
   router.hasParam = function hasParam(paramName) {
