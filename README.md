@@ -37,6 +37,7 @@ Because the route can change on the browser, we have event listeners for that:
 
 ## supernavigate methods
 
+### router.route(path, params, title);
 ### router.getPath()
 ### router.setPath(path)
 ### router.getParams()
