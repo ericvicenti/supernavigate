@@ -183,6 +183,10 @@ exports.browser = function browserNavigator(window) {
 
   router.getParam = function getParam(paramName) {
     var params = router.getParams();
+    var paramNames = _.keys(params);
+    if (!_.contains(paramNames, paramName)) {
+      return;
+    }
     var param = params[paramName];
     return param;
   }
