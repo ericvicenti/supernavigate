@@ -1,6 +1,6 @@
 {
   "name": "supernavigate",
-  "version": "0.1.5",
+  "version": "0.1.5-add-setUrl.0",
   "description": "",
   "main": "supernavigate.js",
   "scripts": {
