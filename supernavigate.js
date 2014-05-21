@@ -13,6 +13,9 @@ function _calculateUrl(path, params) {
 
 function _getUrlUtils(router) {
   return {
+    setUrl: function(url) {
+      return url;
+    },
     setPath: function(path) {
       return _calculateUrl(path, router.getParams());
     },
@@ -60,6 +63,10 @@ exports.server = function serverNavigator(req, res) {
     var target = _calculateUrl(router._path, router._params);
 
     res.redirect(target);
+  }
+
+  router.setUrl = function setUrl(url) {
+    res.redirect(url);
   }
 
   router.setPath = function setPath(path) {
@@ -161,6 +168,10 @@ exports.browser = function browserNavigator(window) {
   router.getPath = function getPath() {
     var path = window.location.pathname;
     return path;
+  }
+
+  router.setUrl = function setUrl(url) {
+    window.location = url;
   }
 
   router.setPath = function setPath(path) {
